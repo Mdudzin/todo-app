@@ -3,7 +3,6 @@ package com.dudzin.todoapp.logic;
 import com.dudzin.todoapp.TaskConfigurationProperties;
 import com.dudzin.todoapp.model.*;
 import com.dudzin.todoapp.model.projection.GroupReadModel;
-import com.dudzin.todoapp.model.projection.GroupWriteModel;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -13,9 +12,9 @@ import java.util.stream.Collectors;
 @Service
 public class ProjectService {
 
-    private ProjectRepository repository;
-    private TaskGroupRepository taskGroupRepository;
-    private TaskConfigurationProperties config;
+    private final ProjectRepository repository;
+    private final TaskGroupRepository taskGroupRepository;
+    private final TaskConfigurationProperties config;
 
     public ProjectService(ProjectRepository repository, TaskGroupRepository taskGroupRepository, TaskConfigurationProperties config) {
         this.repository = repository;
@@ -45,7 +44,8 @@ public class ProjectService {
                                     .map(projectStep -> new Task(projectStep.getDescription(), deadline.plusDays(projectStep.getDaysToDeadline())))
                                     .collect(Collectors.toSet()));
                     return targetGroup;
-                }).orElseThrow(() -> new IllegalArgumentException("Project with given id not found."));
+                })
+                .orElseThrow(() -> new IllegalArgumentException("Project with given id not found."));
         return new GroupReadModel(result);
     }
 }
